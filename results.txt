@@ -1,0 +1,60 @@
+U1-n75 best sol: hiring 15560.0 trans 791.0 total 16351.0 m 13 
+
+U2-n75 best sol: hiring 14680.0 trans 834.0 total 15514.0 m 13 
+
+U3-n75 best sol: hiring 14480.0 trans 1043.0 total 15523.0 m 13 
+
+U4-n75 best sol: hiring 14680.0 trans 794.0 total 15474.0 m 13 
+
+U5-n75 best sol: hiring 15160.0 trans 857.0 total 16017.0 m 13 
+
+S1-n75 best sol: hiring 17520.0 trans 1717.0 total 19237.0 m 15 
+
+S2-n75 best sol: hiring 17080.0 trans 1517.0 total 18597.0 m 15 
+
+S3-n75 best sol: hiring 16480.0 trans 1561.0 total 18041.0 m 15 
+
+S4-n75 best sol: hiring 18120.0 trans 1580.0 total 19700.0 m 16 
+
+S5-n75 best sol: hiring 17560.0 trans 1426.0 total 18986.0 m 15 
+
+U1-n100 best sol: hiring 21200.0 trans 1387.0 total 22587.0 m 18 
+
+U2-n100 best sol: hiring 21760.0 trans 1265.0 total 23025.0 m 19 
+
+U3-n100 best sol: hiring 20520.0 trans 1125.0 total 21645.0 m 18 
+
+U4-n100 best sol: hiring 20720.0 trans 1385.0 total 22105.0 m 18 
+
+U5-n100 best sol: hiring 23720.0 trans 1254.0 total 24974.0 m 21 
+
+S1-n100 best sol: hiring 24200.0 trans 2258.0 total 26458.0 m 21 
+
+S2-n100 best sol: hiring 23720.0 trans 2120.0 total 25840.0 m 21 
+
+S3-n100 best sol: hiring 23960.0 trans 2235.0 total 26195.0 m 21 
+
+S4-n100 best sol: hiring 23320.0 trans 2258.0 total 25578.0 m 21 
+
+S5-n100 best sol: hiring 26840.0 trans 2073.0 total 28913.0 m 23 
+
+U1-n125 best sol: hiring 27320.0 trans 1830.0 total 29150.0 m 24 
+
+U2-n125 best sol: hiring 26800.0 trans 1779.0 total 28579.0 m 24 
+
+U3-n125 best sol: hiring 26400.0 trans 1611.0 total 28011.0 m 23 
+
+U4-n125 best sol: hiring 26200.0 trans 1739.0 total 27939.0 m 23 
+
+U5-n125 best sol: hiring 26360.0 trans 1727.0 total 28087.0 m 23 
+
+S1-n125 best sol: hiring 30600.0 trans 2614.0 total 33214.0 m 27 
+
+S2-n125 best sol: hiring 30880.0 trans 2814.0 total 33694.0 m 27 
+
+S3-n125 best sol: hiring 30200.0 trans 3081.0 total 33281.0 m 27 
+
+S4-n125 best sol: hiring 30360.0 trans 2886.0 total 33246.0 m 27 
+
+S5-n125 best sol: hiring 29800.0 trans 2960.0 total 32760.0 m 26 
+
