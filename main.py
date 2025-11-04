@@ -23,18 +23,23 @@ def main():
 
     # 10-1-dist.txt / 10-1-job.txt
     # S1-n75-ODwalk.txt / S1-n75-Jobs.txt
+    instances = ["U1-n75"]
+    # instances = ["U1-n75",  "U2-n75",  "U3-n75",  "U4-n75",  "U5-n75",
+    #              "S1-n75",  "S2-n75",  "S3-n75",  "S4-n75",  "S5-n75",
+    #              "U1-n100", "U2-n100", "U3-n100", "U4-n100", "U5-n100",
+    #              "S1-n100", "S2-n100", "S3-n100", "S4-n100", "S5-n100", 
+    #              "U1-n125", "U2-n125", "U3-n125", "U4-n125", "U5-n125",
+    #              "S1-n125", "S2-n125", "S3-n125", "S4-n125", "S5-n125"]
 
-    instances = ["U1-n75",  "U2-n75",  "U3-n75",  "U4-n75",  "U5-n75",
-                 "S1-n75",  "S2-n75",  "S3-n75",  "S4-n75",  "S5-n75",
-                 "U1-n100", "U2-n100", "U3-n100", "U4-n100", "U5-n100",
-                 "S1-n100", "S2-n100", "S3-n100", "S4-n100", "S5-n100", 
-                 "U1-n125", "U2-n125", "U3-n125", "U4-n125", "U5-n125",
-                 "S1-n125", "S2-n125", "S3-n125", "S4-n125", "S5-n125"]
+    # instances = ["10-1", "10-2", "10-3", "10-4", "10-5"]
 
     for instance in instances:
         
         dist = np.loadtxt(f"dataset/{instance}-ODwalk.txt")
         job = np.loadtxt(f"dataset/{instance}-Jobs.txt")
+
+        # dist = np.loadtxt(f"dataset/{instance}-dist.txt")
+        # job = np.loadtxt(f"dataset/{instance}-job.txt")
 
         test_times = 30 # 30
 

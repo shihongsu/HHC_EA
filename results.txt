@@ -58,3 +58,17 @@ S4-n125 best sol: hiring 30360.0 trans 2886.0 total 33246.0 m 27
 
 S5-n125 best sol: hiring 29800.0 trans 2960.0 total 32760.0 m 26 
 
+10-1 best sol: hiring 2440.0 trans 122.0 total 2562.0 m 2 
+
+10-2 best sol: hiring 2200.0 trans 86.0 total 2286.0 m 2 
+
+10-3 best sol: hiring 2440.0 trans 99.0 total 2539.0 m 2 
+
+10-4 best sol: hiring 2440.0 trans 85.0 total 2525.0 m 2 
+
+10-5 best sol: hiring 2440.0 trans 78.0 total 2518.0 m 2 
+
+U1-n75 best sol: hiring 16520.0 trans 822.0 total 17342.0 m 14 
+
+U1-n75 best sol: hiring 15520.0 trans 673.0 total 16193.0 m 13 
+

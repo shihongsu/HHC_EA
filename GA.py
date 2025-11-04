@@ -4,15 +4,31 @@ import random as rd
 import pygad
 import numpy as np
 from const import *
+from dhich import getInit
 
 class HHC_GA(pygad.GA):
     def __init__(self, dist, job, config) -> None:
-        self.patients = job
+
         self.distances = dist
+        self.patients = job
         n = len(self.patients)
 
+        init_seq = getInit(dist, job)
+
+        # *** need to put in best sol !!!
+
         # init_pop
-        init_pop = [np.random.permutation(n) for _ in range(config["population"])]
+        init_pop = []
+        for _ in range(config["population"]):
+            i = rd.random()
+            if i <= 0.25:
+                init_pop.append(self.swap_perturb(init_seq))
+            elif 0.25 < i <= 0.5:
+                init_pop.append(self.insert_perturb(init_seq))
+            elif 0.5 < i <= 0.75:
+                init_pop.append(self.shuffle_perturb(init_seq))
+            elif 0.75 < i <= 1:
+                init_pop.append(np.random.permutation(n))
 
         self.mut_prob = config["mut_prob"]
 
@@ -40,6 +56,34 @@ class HHC_GA(pygad.GA):
                         "lv2": [],
                         "lv1": [],
                         }
+        
+    def swap_perturb(self, gene, swaps = 5):
+        new_gene = gene.copy()
+        n = len(new_gene)
+        for _ in range(swaps):
+            i, j = rd.sample(range(n), 2)
+            new_gene[i], new_gene[j] = new_gene[j], new_gene[i]
+        return new_gene
+    
+    def insert_perturb(self, gene, insertions = 5):
+        new_gene = gene.copy()
+        n = len(new_gene)
+        for _ in range(insertions):
+            i = rd.randrange(n)
+            element = new_gene.pop(i)
+            j = rd.randrange(n)
+            new_gene.insert(j, element)
+        return new_gene
+    
+    def shuffle_perturb(self, gene, deck = 5):
+        new_gene = gene.copy()
+        n = len(new_gene)
+        start = rd.randrange(n - deck + 1)
+        end = start + deck
+        subseq = new_gene[start: end]
+        rd.shuffle(subseq)
+        new_gene[start: end] = subseq
+        return new_gene
 
     def _fitness_func(self, ga_instance, sol, sol_idx):
         objective = 0
