@@ -18,8 +18,8 @@ class HHC_GA(pygad.GA):
         # *** need to put in best sol !!!
 
         # init_pop
-        init_pop = []
-        for _ in range(config["population"]):
+        init_pop = [init_seq]
+        for _ in range(config["population"]-1):
             i = rd.random()
             if i <= 0.25:
                 init_pop.append(self.swap_perturb(init_seq))
