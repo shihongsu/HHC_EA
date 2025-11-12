@@ -88,6 +88,7 @@ class HHC_GA(pygad.GA):
     def _fitness_func(self, ga_instance, sol, sol_idx):
         objective = 0
         schedules = self.make_schedule(sol)
+        # print(schedules)
         for cg in schedules:
             if cg[1] == 1:
                 objective += LV1CG
@@ -105,32 +106,45 @@ class HHC_GA(pygad.GA):
         caregivers = []
 
         job = self.patients[sol[0]]
-        cg = [[sol[0]], job[2], job[0] + job[3], job[3]]
+        cg = [[sol[0]], -1, job[0] + job[3], job[3]]
         # seq, lv, curr, serv
         for pat in sol[1:]:
             last_pat = cg[0][-1]
-            last_job = self.patients[cg[0][-1]]
+            last_job = self.patients[last_pat]
             dist = self.distances[pat][last_pat]
             if self.check(cg, pat):
                 cg[0].append(pat)
                 cg[2] += (dist + last_job[3])
                 cg[3] += (dist + last_job[3])
             else:
+                cg[1] = self.get_max_lv(cg)
                 caregivers.append(cg)
                 job = self.patients[pat]
-                cg = [[pat], job[2], job[0] + job[3], job[3]]
+                cg = [[pat], -1, job[0] + job[3], job[3]]
+
+        # add last cg's route
+        cg[1] = self.get_max_lv(cg)
         caregivers.append(cg)
+
         return caregivers
+    
+    def get_max_lv(self, cg):
+        max_lv = -1
+        for pat in cg[0]:
+            if self.patients[pat][2] > max_lv:
+                max_lv = self.patients[pat][2]
+        return max_lv
+
 
     def check(self, cg, pat):
         last_pat = cg[0][-1]
         job = self.patients[pat]
         dist = self.distances[pat][last_pat]
         serve = self.patients[pat][3]
-        if (cg[1] >= job[2] and 
-			cg[3] + dist + serve <= WLUB and
-			job[0] <= cg[2] + dist and
-			cg[2] + dist + job[3] <= job[1]):
+        if (cg[3] + dist + serve <= WLUB and    # workload
+			job[0] <= cg[2] + dist and          # starting
+			cg[2] + dist + job[3] <= job[1]):   # ending
+            # cg[1] >= job[2] and                 # lv
             return True
         return False
 
