@@ -1,0 +1,80 @@
+10-1 best sol: hiring 2440.0 trans 121.0 total 2561.0 m 2 
+
+10-2 best sol: hiring 2200.0 trans 86.0 total 2286.0 m 2 
+
+10-3 best sol: hiring 2440.0 trans 99.0 total 2539.0 m 2 
+
+10-4 best sol: hiring 2440.0 trans 85.0 total 2525.0 m 2 
+
+10-5 best sol: hiring 2440.0 trans 78.0 total 2518.0 m 2 
+
+10-6 best sol: hiring 2440.0 trans 105.0 total 2545.0 m 2 
+
+10-7 best sol: hiring 2200.0 trans 88.0 total 2288.0 m 2 
+
+10-8 best sol: hiring 2440.0 trans 98.0 total 2538.0 m 2 
+
+10-9 best sol: hiring 2440.0 trans 93.0 total 2533.0 m 2 
+
+10-10 best sol: hiring 2440.0 trans 87.0 total 2527.0 m 2 
+
+20-1 best sol: hiring 4640.0 trans 131.0 total 4771.0 m 4 
+
+20-2 best sol: hiring 4200.0 trans 171.0 total 4371.0 m 4 
+
+20-3 best sol: hiring 4640.0 trans 137.0 total 4777.0 m 4 
+
+20-4 best sol: hiring 3640.0 trans 156.0 total 3796.0 m 3 
+
+20-5 best sol: hiring 3640.0 trans 173.0 total 3813.0 m 3 
+
+20-6 best sol: hiring 3640.0 trans 165.0 total 3805.0 m 3 
+
+20-7 best sol: hiring 4200.0 trans 161.0 total 4361.0 m 4 
+
+20-8 best sol: hiring 4640.0 trans 136.0 total 4776.0 m 4 
+
+20-9 best sol: hiring 4640.0 trans 142.0 total 4782.0 m 4 
+
+20-10 best sol: hiring 4640.0 trans 154.0 total 4794.0 m 4 
+
+30-1 best sol: hiring 6280.0 trans 278.0 total 6558.0 m 5 
+
+30-2 best sol: hiring 6600.0 trans 266.0 total 6866.0 m 6 
+
+30-3 best sol: hiring 5640.0 trans 304.0 total 5944.0 m 5 
+
+30-4 best sol: hiring 5640.0 trans 265.0 total 5905.0 m 5 
+
+30-5 best sol: hiring 7080.0 trans 240.0 total 7320.0 m 6 
+
+30-6 best sol: hiring 5840.0 trans 345.0 total 6185.0 m 5 
+
+30-7 best sol: hiring 5600.0 trans 281.0 total 5881.0 m 5 
+
+30-8 best sol: hiring 7080.0 trans 280.0 total 7360.0 m 6 
+
+30-9 best sol: hiring 6640.0 trans 206.0 total 6846.0 m 6 
+
+30-10 best sol: hiring 6080.0 trans 243.0 total 6323.0 m 5 
+
+40-1 best sol: hiring 8240.0 trans 291.0 total 8531.0 m 7 
+
+40-2 best sol: hiring 8040.0 trans 303.0 total 8343.0 m 7 
+
+40-3 best sol: hiring 7640.0 trans 309.0 total 7949.0 m 7 
+
+40-4 best sol: hiring 7840.0 trans 312.0 total 8152.0 m 7 
+
+40-5 best sol: hiring 9280.0 trans 323.0 total 9603.0 m 8 
+
+40-6 best sol: hiring 8440.0 trans 314.0 total 8754.0 m 7 
+
+40-7 best sol: hiring 7840.0 trans 384.0 total 8224.0 m 7 
+
+40-8 best sol: hiring 7640.0 trans 439.0 total 8079.0 m 7 
+
+40-9 best sol: hiring 8040.0 trans 335.0 total 8375.0 m 7 
+
+40-10 best sol: hiring 7840.0 trans 443.0 total 8283.0 m 7 
+

@@ -113,14 +113,14 @@ def plot_result(config, records):
     plt.xlabel("Generation")
     plt.ylabel("Fitness Value")
 
-    plt.figure()
-    plt.plot(list(range(config["generation"])), records["lv3"], label = "lv3")
-    plt.plot(list(range(config["generation"])), records["lv2"], label = "lv2")
-    plt.plot(list(range(config["generation"])), records["lv1"], label = "lv1")
-    plt.title("AVG individual Per Generation")
-    plt.xlabel("Generation")
-    plt.ylabel("individual num")
-    plt.legend()
+    # plt.figure()
+    # plt.plot(list(range(config["generation"])), records["lv3"], label = "lv3")
+    # plt.plot(list(range(config["generation"])), records["lv2"], label = "lv2")
+    # plt.plot(list(range(config["generation"])), records["lv1"], label = "lv1")
+    # plt.title("AVG individual Per Generation")
+    # plt.xlabel("Generation")
+    # plt.ylabel("individual num")
+    # plt.legend()
 
 if __name__ == "__main__":
     main()
