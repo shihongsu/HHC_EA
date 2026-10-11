@@ -1,25 +1,26 @@
-import networkx as nx
-import matplotlib.pyplot as plt
 import random as rd
 import pygad
 import numpy as np
+
 from const import *
 from dhich import DHICH
 
 class HHC_GA(pygad.GA):
     def __init__(self, dist, job, config) -> None:
 
-        self.distances = dist
-        self.patients = job
-        n = len(self.patients)
+        self.dist = dist
+        self.job = job
+        n = len(self.job)
 
-        init_seq = getInit(dist, job)
-
+        solver = DHICH(self.dist, self.job)
+        clusters = solver.convexHull()
+        init_seq = [pat for cluster in clusters for pat in cluster[0]]
+        # print(init_seq)
         # *** need to put in best sol !!!
 
         # init_pop
         init_pop = [init_seq]
-        for _ in range(config["population"]-1):
+        for _ in range(config["population"] - 1):
             i = rd.random()
             if i <= 0.25:
                 init_pop.append(self.swap_perturb(init_seq))
@@ -45,8 +46,7 @@ class HHC_GA(pygad.GA):
             gene_type = int,
             on_generation = self.callback_generation,
             K_tournament = config["K_tour"] if config["parent_selection_type"] == "tournament" else None,
-            parent_selection_type = config["parent_selection_type"],          
-            keep_parents = config["keep_parents"],
+            parent_selection_type = config["parent_selection_type"],
             keep_elitism = config["keep_elitism"],
         )
 
@@ -86,65 +86,58 @@ class HHC_GA(pygad.GA):
         return new_gene
 
     def _fitness_func(self, ga_instance, sol, sol_idx):
-        objective = 0
-        schedules = self.make_schedule(sol)
+        fitness = 0
+        routes = self.make_schedule(sol)
         # print(schedules)
-        for cg in schedules:
-            if cg[1] == 1:
-                objective += LV1CG
-            elif cg[1] == 2:
-                objective += LV2CG
-            elif cg[1] == 3:
-                objective += LV3CG
-            for i in range(len(cg[0]) - 1):
-                dist = self.distances[cg[0][i]][cg[0][i + 1]]
-                objective += dist * TR
+        for route in routes:
+            if route[1] == 1:
+                fitness += LV1CG
+            elif route[1] == 2:
+                fitness += LV2CG
+            elif route[1] == 3:
+                fitness += LV3CG
+            for i in range(len(route[0]) - 1):
+                fitness += self.dist[route[0][i]][route[0][i + 1]] * TR
         # print("FIT:", objective)
-        return -objective
+        return -fitness
 
+    # make schedules for an individual
     def make_schedule(self, sol):
-        caregivers = []
+        routes = []
+        # curr: current patient
+        # route: [route, lv, curr time, service time]
+        curr = self.job[sol[0]]
+        route = [[sol[0]], -1, curr[0] + curr[3], curr[3]]
 
-        job = self.patients[sol[0]]
-        cg = [[sol[0]], -1, job[0] + job[3], job[3]]
-        # seq, lv, curr, serv
         for pat in sol[1:]:
-            last_pat = cg[0][-1]
-            last_job = self.patients[last_pat]
-            dist = self.distances[pat][last_pat]
-            if self.check(cg, pat):
-                cg[0].append(pat)
-                cg[2] += (dist + last_job[3])
-                cg[3] += (dist + last_job[3])
+            last_pat = route[0][-1]
+            last_job = self.job[last_pat]
+            d = self.dist[pat][last_pat]
+            if self.check(route, pat):
+                route[0].append(pat)
+                route[2] += (d + self.job[pat][3])
+                route[3] += (d + self.job[pat][3])
             else:
-                cg[1] = self.get_max_lv(cg)
-                caregivers.append(cg)
-                job = self.patients[pat]
-                cg = [[pat], -1, job[0] + job[3], job[3]]
+                route[1] = max(self.job[i][2] for i in route[0])
+                routes.append(route)
+                job = self.job[pat]
+                route = [[pat], -1, job[0] + job[3], job[3]]
 
         # add last cg's route
-        cg[1] = self.get_max_lv(cg)
-        caregivers.append(cg)
+        route[1] = max(self.job[i][2] for i in route[0])
+        routes.append(route)
 
-        return caregivers
-    
-    def get_max_lv(self, cg):
-        max_lv = -1
-        for pat in cg[0]:
-            if self.patients[pat][2] > max_lv:
-                max_lv = self.patients[pat][2]
-        return max_lv
+        return routes
 
-
-    def check(self, cg, pat):
-        last_pat = cg[0][-1]
-        job = self.patients[pat]
-        dist = self.distances[pat][last_pat]
-        serve = self.patients[pat][3]
-        if (cg[3] + dist + serve <= WLUB and    # workload
-			job[0] <= cg[2] + dist and          # starting
-			cg[2] + dist + job[3] <= job[1]):   # ending
-            # cg[1] >= job[2] and                 # lv
+    # check if pat can be added to route
+    def check(self, route, pat):
+        last_pat = route[0][-1]
+        curr = self.job[pat]
+        d = self.dist[last_pat][pat]
+        serve = self.job[pat][3]
+        if (route[3] + d + serve <= WLUB and    # workload
+			curr[0] <= route[2] + d and          # starting
+			route[2] + d + curr[3] <= curr[1]):   # ending
             return True
         return False
 
@@ -180,30 +173,6 @@ class HHC_GA(pygad.GA):
                 child[j] = temp
         return offspring
 
-    def plot_best_sol(self):
-        sol, fitness, _ = self.get_best_sol()
-        print("Is tree", nx.is_tree(sol))
-        print("fitness", fitness)
-
-        # calculate total SPT
-        start = next(node for node, data in sol.nodes(data=True) if data.get("start", False))
-        dijkstra = nx.single_source_dijkstra_path_length(sol, start, weight = "weight")
-        result = {}
-        for node in sol.nodes():
-            if node in dijkstra:  # If the node is reachable, use its Dijkstra value
-                result[node] = dijkstra[node]
-            else:  # If the node is not reachable, assign a penalty
-                result[node] = self.graph_total_weight
-        print(sum(result.values()))
-
-        self.plot_embedded_graph(sol)
-
-    def get_best_sol(self, pop_fitness=None):
-        gene_sol, solution_fitness, solution_idx = self.best_solution(pop_fitness)
-        
-        sol = self.geno2pheno(gene_sol)
-
-        return sol, solution_fitness, solution_idx
 
     def callback_generation(self, ga_instance):
         sol, best_fit, _ = ga_instance.best_solution()
