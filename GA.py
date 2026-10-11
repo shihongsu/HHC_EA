@@ -4,7 +4,7 @@ import random as rd
 import pygad
 import numpy as np
 from const import *
-from dhich import getInit
+from dhich import DHICH
 
 class HHC_GA(pygad.GA):
     def __init__(self, dist, job, config) -> None:

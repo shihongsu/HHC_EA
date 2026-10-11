@@ -18,63 +18,183 @@
 
 10-10 best sol: hiring 2440.0 trans 87.0 total 2527.0 m 2 
 
-20-1 best sol: hiring 4640.0 trans 131.0 total 4771.0 m 4 
+20-1 best sol: hiring 4640.0 trans 128.0 total 4768.0 m 4 
 
-20-2 best sol: hiring 4200.0 trans 171.0 total 4371.0 m 4 
+20-2 best sol: hiring 4200.0 trans 163.0 total 4363.0 m 4 
 
-20-3 best sol: hiring 4640.0 trans 137.0 total 4777.0 m 4 
+20-3 best sol: hiring 4640.0 trans 133.0 total 4773.0 m 4 
 
-20-4 best sol: hiring 3640.0 trans 156.0 total 3796.0 m 3 
+20-4 best sol: hiring 3640.0 trans 159.0 total 3799.0 m 3 
 
-20-5 best sol: hiring 3640.0 trans 173.0 total 3813.0 m 3 
+20-5 best sol: hiring 3640.0 trans 172.0 total 3812.0 m 3 
 
-20-6 best sol: hiring 3640.0 trans 165.0 total 3805.0 m 3 
+20-6 best sol: hiring 3840.0 trans 149.0 total 3989.0 m 3 
 
-20-7 best sol: hiring 4200.0 trans 161.0 total 4361.0 m 4 
+20-7 best sol: hiring 4200.0 trans 159.0 total 4359.0 m 4 
 
-20-8 best sol: hiring 4640.0 trans 136.0 total 4776.0 m 4 
+20-8 best sol: hiring 4640.0 trans 141.0 total 4781.0 m 4 
 
-20-9 best sol: hiring 4640.0 trans 142.0 total 4782.0 m 4 
+20-9 best sol: hiring 4640.0 trans 144.0 total 4784.0 m 4 
 
-20-10 best sol: hiring 4640.0 trans 154.0 total 4794.0 m 4 
+20-10 best sol: hiring 4640.0 trans 151.0 total 4791.0 m 4 
 
-30-1 best sol: hiring 6280.0 trans 278.0 total 6558.0 m 5 
+30-1 best sol: hiring 6280.0 trans 288.0 total 6568.0 m 5 
 
-30-2 best sol: hiring 6600.0 trans 266.0 total 6866.0 m 6 
+30-2 best sol: hiring 6400.0 trans 314.0 total 6714.0 m 6 
 
-30-3 best sol: hiring 5640.0 trans 304.0 total 5944.0 m 5 
+30-3 best sol: hiring 5840.0 trans 302.0 total 6142.0 m 5 
 
-30-4 best sol: hiring 5640.0 trans 265.0 total 5905.0 m 5 
+30-4 best sol: hiring 5640.0 trans 249.0 total 5889.0 m 5 
 
-30-5 best sol: hiring 7080.0 trans 240.0 total 7320.0 m 6 
+30-5 best sol: hiring 7080.0 trans 239.0 total 7319.0 m 6 
 
-30-6 best sol: hiring 5840.0 trans 345.0 total 6185.0 m 5 
+30-6 best sol: hiring 5840.0 trans 321.0 total 6161.0 m 5 
 
-30-7 best sol: hiring 5600.0 trans 281.0 total 5881.0 m 5 
+30-7 best sol: hiring 5600.0 trans 319.0 total 5919.0 m 5 
 
-30-8 best sol: hiring 7080.0 trans 280.0 total 7360.0 m 6 
+30-8 best sol: hiring 7080.0 trans 267.0 total 7347.0 m 6 
 
-30-9 best sol: hiring 6640.0 trans 206.0 total 6846.0 m 6 
+30-9 best sol: hiring 6640.0 trans 197.0 total 6837.0 m 6 
 
-30-10 best sol: hiring 6080.0 trans 243.0 total 6323.0 m 5 
+30-10 best sol: hiring 6080.0 trans 241.0 total 6321.0 m 5 
 
-40-1 best sol: hiring 8240.0 trans 291.0 total 8531.0 m 7 
+40-1 best sol: hiring 8240.0 trans 294.0 total 8534.0 m 7 
 
-40-2 best sol: hiring 8040.0 trans 303.0 total 8343.0 m 7 
+40-2 best sol: hiring 8040.0 trans 302.0 total 8342.0 m 7 
 
-40-3 best sol: hiring 7640.0 trans 309.0 total 7949.0 m 7 
+40-3 best sol: hiring 7640.0 trans 316.0 total 7956.0 m 7 
 
-40-4 best sol: hiring 7840.0 trans 312.0 total 8152.0 m 7 
+40-4 best sol: hiring 7840.0 trans 306.0 total 8146.0 m 7 
 
-40-5 best sol: hiring 9280.0 trans 323.0 total 9603.0 m 8 
+40-5 best sol: hiring 9080.0 trans 354.0 total 9434.0 m 8 
 
-40-6 best sol: hiring 8440.0 trans 314.0 total 8754.0 m 7 
+40-6 best sol: hiring 8240.0 trans 321.0 total 8561.0 m 7 
 
-40-7 best sol: hiring 7840.0 trans 384.0 total 8224.0 m 7 
+40-7 best sol: hiring 8040.0 trans 357.0 total 8397.0 m 7 
 
-40-8 best sol: hiring 7640.0 trans 439.0 total 8079.0 m 7 
+40-8 best sol: hiring 7640.0 trans 406.0 total 8046.0 m 7 
 
-40-9 best sol: hiring 8040.0 trans 335.0 total 8375.0 m 7 
+40-9 best sol: hiring 8280.0 trans 258.0 total 8538.0 m 7 
 
-40-10 best sol: hiring 7840.0 trans 443.0 total 8283.0 m 7 
+40-10 best sol: hiring 8080.0 trans 358.0 total 8438.0 m 7 
+
+U1-n75 best sol: hiring 15520.0 trans 704.0 total 16224.0 m 13 
+
+U2-n75 best sol: hiring 13480.0 trans 679.0 total 14159.0 m 12 
+
+U3-n75 best sol: hiring 13920.0 trans 696.0 total 14616.0 m 12 
+
+U4-n75 best sol: hiring 13920.0 trans 667.0 total 14587.0 m 12 
+
+U5-n75 best sol: hiring 15160.0 trans 741.0 total 15901.0 m 13 
+
+S1-n75 best sol: hiring 16200.0 trans 1151.0 total 17351.0 m 13 
+
+S2-n75 best sol: hiring 15880.0 trans 1233.0 total 17113.0 m 14 
+
+S3-n75 best sol: hiring 15720.0 trans 1297.0 total 17017.0 m 14 
+
+S4-n75 best sol: hiring 14920.0 trans 1379.0 total 16299.0 m 13 
+
+S5-n75 best sol: hiring 15360.0 trans 1222.0 total 16582.0 m 13 
+
+U1-n100 best sol: hiring 20240.0 trans 764.0 total 21004.0 m 17 
+
+U2-n100 best sol: hiring 18760.0 trans 867.0 total 19627.0 m 16 
+
+U3-n100 best sol: hiring 17760.0 trans 937.0 total 18697.0 m 15 
+
+U4-n100 best sol: hiring 19120.0 trans 830.0 total 19950.0 m 17 
+
+U5-n100 best sol: hiring 21560.0 trans 1017.0 total 22577.0 m 19 
+
+S1-n100 best sol: hiring 23440.0 trans 1644.0 total 25084.0 m 20 
+
+S2-n100 best sol: hiring 23160.0 trans 1473.0 total 24633.0 m 20 
+
+S3-n100 best sol: hiring 20000.0 trans 1588.0 total 21588.0 m 17 
+
+S4-n100 best sol: hiring 21080.0 trans 1536.0 total 22616.0 m 19 
+
+S5-n100 best sol: hiring 25080.0 trans 1570.0 total 26650.0 m 21 
+
+U1-n125 best sol: hiring 25160.0 trans 1179.0 total 26339.0 m 22 
+
+U2-n125 best sol: hiring 23000.0 trans 990.0 total 23990.0 m 20 
+
+U3-n125 best sol: hiring 23920.0 trans 1063.0 total 24983.0 m 21 
+
+U4-n125 best sol: hiring 24960.0 trans 1123.0 total 26083.0 m 22 
+
+U5-n125 best sol: hiring 24760.0 trans 1017.0 total 25777.0 m 21 
+
+S1-n125 best sol: hiring 27280.0 trans 1563.0 total 28843.0 m 23 
+
+S2-n125 best sol: hiring 27080.0 trans 1914.0 total 28994.0 m 23 
+
+S3-n125 best sol: hiring 26640.0 trans 1733.0 total 28373.0 m 23 
+
+S4-n125 best sol: hiring 27960.0 trans 1902.0 total 29862.0 m 25 
+
+S5-n125 best sol: hiring 26960.0 trans 1779.0 total 28739.0 m 23 
+
+U1-n75 best sol: hiring 15720.0 trans 719.0 total 16439.0 m 13 
+
+U2-n75 best sol: hiring 13480.0 trans 642.0 total 14122.0 m 12 
+
+U3-n75 best sol: hiring 14720.0 trans 759.0 total 15479.0 m 13 
+
+U4-n75 best sol: hiring 13920.0 trans 653.0 total 14573.0 m 12 
+
+U5-n75 best sol: hiring 14400.0 trans 729.0 total 15129.0 m 12 
+
+S1-n75 best sol: hiring 16600.0 trans 1158.0 total 17758.0 m 13 
+
+S2-n75 best sol: hiring 15880.0 trans 1408.0 total 17288.0 m 14 
+
+S3-n75 best sol: hiring 15680.0 trans 1304.0 total 16984.0 m 14 
+
+S4-n75 best sol: hiring 14880.0 trans 1332.0 total 16212.0 m 13 
+
+S5-n75 best sol: hiring 15360.0 trans 1331.0 total 16691.0 m 13 
+
+U1-n100 best sol: hiring 21000.0 trans 798.0 total 21798.0 m 18 
+
+U2-n100 best sol: hiring 18800.0 trans 853.0 total 19653.0 m 16 
+
+U3-n100 best sol: hiring 18320.0 trans 891.0 total 19211.0 m 16 
+
+U4-n100 best sol: hiring 19120.0 trans 804.0 total 19924.0 m 17 
+
+U5-n100 best sol: hiring 21560.0 trans 949.0 total 22509.0 m 19 
+
+S1-n100 best sol: hiring 23640.0 trans 1664.0 total 25304.0 m 20 
+
+S2-n100 best sol: hiring 23360.0 trans 1336.0 total 24696.0 m 20 
+
+S3-n100 best sol: hiring 20000.0 trans 1606.0 total 21606.0 m 17 
+
+S4-n100 best sol: hiring 20880.0 trans 1731.0 total 22611.0 m 19 
+
+S5-n100 best sol: hiring 25280.0 trans 1579.0 total 26859.0 m 21 
+
+U1-n125 best sol: hiring 24560.0 trans 1049.0 total 25609.0 m 21 
+
+U2-n125 best sol: hiring 23000.0 trans 953.0 total 23953.0 m 20 
+
+U3-n125 best sol: hiring 23720.0 trans 1050.0 total 24770.0 m 21 
+
+U4-n125 best sol: hiring 25160.0 trans 952.0 total 26112.0 m 22 
+
+U5-n125 best sol: hiring 24520.0 trans 1048.0 total 25568.0 m 21 
+
+S1-n125 best sol: hiring 27000.0 trans 1756.0 total 28756.0 m 23 
+
+S2-n125 best sol: hiring 27080.0 trans 1937.0 total 29017.0 m 23 
+
+S3-n125 best sol: hiring 26320.0 trans 1941.0 total 28261.0 m 22 
+
+S4-n125 best sol: hiring 27360.0 trans 1866.0 total 29226.0 m 24 
+
+S5-n125 best sol: hiring 26960.0 trans 1759.0 total 28719.0 m 23 
 

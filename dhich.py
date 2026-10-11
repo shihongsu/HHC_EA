@@ -1,422 +1,209 @@
 import numpy as np
-import math
 import matplotlib.pyplot as plt
-import copy
 from sklearn.manifold import MDS
 from scipy.spatial import ConvexHull
 
 from const import *
 
-# Check whether the matrix is symmetric
-def makeSymm(dist):
-    n = len(dist)
-    for i in range(n):
-        for j in range(n):
-            # Fix the index to match the bigger one
-            if dist[i][j] != dist[j][i]:
-                if dist[i][j] > dist[j][i]:
-                    dist[j][i] = dist[i][j]
-                elif dist[i][j] < dist[j][i]:
-                    dist[i][j] = dist[j][i]
+class DHICH:
+    def __init__(self, dist, job):
+        self.dist = dist
+        self.job = job
+        self.pts = None
 
-# Check some basic properties of the data
-def checkData(dist, job):
-    allDist = 0
-    allJob = 0
-    # number of caregivers, their workload and upper bound
-    cgWL = 0
-    cgCount = 0
-    n = len(dist)
-    for i in range(n):
-        allJob += job[i][3]
-        for j in range(i):
-            allDist += dist[i][j]
-    #print("All job:", allJob)
-    avgDist = allDist / ((n * (n-1)) / 2)
-    avgJob = allJob / n
-    #print("Avg dist:", round(avgDist + 0.5))
-    #print("Avg job:", round(avgJob + 0.5))
-    cgWL += avgJob
-    oneShift = avgJob + avgDist
-    while(n > 0):
-        if(cgWL + oneShift <= WLUB):
-            cgWL += oneShift
-            n -= 1
-        else:
-            cgCount += 1
-            cgWL = avgJob
-    # print(f"Hopefully the system will only need around {cgCount} caregivers.")
-
-# Check if the computed matrix is valid
-def validOfCoords(pts, dist):
-    n = len(pts)
-    distOfPts = [[0 for i in range(n)] for j in range(n)]
-    for i in range(n):
-        for j in range(n):
-            distOfPts[i][j] = (np.sqrt((pts[i][0] - pts[j][0])**2
-                                        + (pts[i][1] - pts[j][1])**2))
-    diffRateCount = 0
-    varRate = []
-    maxRate = -1
-    for i in range(n):
-        for j in range(n):
-            if i < j:
-                diffRate = distOfPts[i][j] / dist[i][j]
-                varRate.append(distOfPts[i][j] / dist[i][j])
-                if  diffRate > 0.5:
-                    diffRateCount += 1
-                if diffRate > maxRate:
-                    maxRate = diffRate
-    varRate = np.array(varRate)
-    print("Distances fall out of desired rate:", diffRateCount, 
-          ", with max rate:", round(maxRate, 2), 
-          ". Coefficient of variation:", round(np.std(varRate) / np.mean(varRate), 2))
-    # The coefficient of variation is a useful criterion when comparing the variance to the mean. 
-    # It's the ratio of the standard deviation (square root of variance) to the mean. 
-    # A higher CV indicates greater variability relative to the mean, which could signal that variance is too high.
-    # CV < 1: The variance is relatively low; CV > 1: The variance is relatively high, meaning the spread is more than the mean.
-
-# Find the serving cluster of the caregiver
-def findCluster(dist, job, notServed, startPt, cgLv, worktime=WLUB):
-    serveCluster = [startPt]
-    servetime = job[startPt][3]
-    currentTime = job[startPt][0] + job[startPt][3]
-    startTime = job[startPt][0]
-    notServed.remove(startPt)
+    def preprocess(self):
+        # sort base on (twS(des), twE(asc), serv(des), lv(des))
+        idx = list(range(len(self.job)))
+        sorted_job = sorted(idx, key = lambda i: (-self.job[i][0], self.job[i][1], -self.job[i][3], -self.job[i][2]))
+        return sorted_job
     
-    while True:
-        if not notServed:
-            break
-
-        candidates = sorted(
-            notServed,
-            key=lambda i: dist[startPt][i]
-        )
+    # Find the serving cluster of the caregiver
+    def findCluster(self, notServed, st, worktime=WLUB):
+        cluster = [st]
+        curr = self.job[st][0] + self.job[st][3]
+        stTime = self.job[st][0]
+        notServed.remove(st)
         
-        found = False
-        for i in candidates:
-            travel = dist[startPt][i]
-            arrival = currentTime + travel
-            begin = arrival
-            finish = begin + job[i][3]
+        while notServed:
+            candidates = sorted(notServed, key=lambda i: self.dist[st][i])
+            
+            for i in candidates:
+                begin = curr + self.dist[st][i]
+                finish = begin + self.job[i][3]
 
-            if (job[i][2] <= cgLv and
-                job[i][0] <= begin and
-                finish <= job[i][1] and
-                servetime + travel + job[i][3] <= worktime):
-                
-                serveCluster.append(i)
-                servetime += travel + job[i][3]
-                currentTime = finish
-                notServed.remove(i)
-                startPt = i
-                found = True
+                # begin >= twS && end <= twE && WL
+                if (begin >= self.job[i][0] and
+                    finish <= self.job[i][1] and
+                    finish - stTime <= worktime):
+
+                    cluster.append(i)
+                    curr = finish
+                    notServed.remove(i)
+                    st = i
+                    break
+            else:   # for ... else: if didn't use break during for, run else
                 break
+        cgLv = max(self.job[i][2] for i in cluster)
+        return [cluster, int(cgLv)]
+
+    # get coordinates for patients
+    def getPoints(self):
+        if self.pts is None:
+            chDist = (self.dist + self.dist.T) / 2
+            mds = MDS(n_components = 2, dissimilarity = "precomputed", random_state = 42)
+            self.pts = mds.fit_transform(chDist)
+        return self.pts
         
-        if not found:
-            break
+    # use CH to get visiting routes of cgs
+    def convexHull(self):
+        # apply MDS to construct CH (need symm matrix)
+        pts = self.getPoints()
+        notServed = list(range(len(self.job)))
+        clusters = []
 
-    return [serveCluster, cgLv, startTime, currentTime]
+        while len(notServed) >= 3:
+            ptsNS = pts[notServed]
+            cH = ConvexHull(ptsNS)
+            # map hull vertices back to original indices
+            cHidx = [notServed[i] for i in cH.vertices]
 
-# Return the level and index of remaining patients
-def findMaxLv(serve, job):
-    maxLv = -1
-    maxLvIdx = -1
-    for i in serve:
-        if job[i][2] > maxLv:
-            maxLv = job[i][2]
-            maxLvIdx = i
-    return [int(maxLvIdx), int(maxLv)]
+            st = cHidx[0]
+            cluster = self.findCluster(notServed, st)
+            clusters.append(cluster)
 
-# Return the time cost of routes
-def calTime(route, dist, job):
-    n = len(route)
-    travellingtime = 0
-    servicetime = 0
-    for i in range(n-1):
-        servicetime += job[route[i]][3]
-        travellingtime += dist[route[i]][route[i + 1]]
-    servicetime += job[route[-1]][3]
-    return [servicetime, travellingtime]
+        # maybe 1 or 2 patients left
+        while notServed:
+            st = max(notServed, key = lambda i: self.job[i][2])
+            cluster = self.findCluster(notServed, st)
+            clusters.append(cluster)
 
-# Use the points on convex hull as pivots for clustering
-def hullPivot(dist, job, notServed, pts):
-    served = []
-    # Less than 3 points cannot form a convex hull, so we make them a cluster
-    while len(notServed) >= 3 :
-        # Construct the convex hull for not yet served        
-        ptsOfnS = [pts[i] for i in notServed]
-        hullTemp = ConvexHull(ptsOfnS)
-        hullLabel = hullTemp.vertices
-        hullIdx = [notServed[i] for i in hullLabel]
-        # print("HI:", hullIdx)
+        return clusters
 
-        #print(hullIdx)
-        lv1OnHull = [i for i in hullIdx if job[i][2] == 1]
-        lv2OnHull = [i for i in hullIdx if job[i][2] == 2]
-        lv3OnHull = [i for i in hullIdx if job[i][2] == 3]
+    def getCost(self, clusters):
+        costs = []
+        times = []
+        for cluster in clusters:
+            route = cluster[0]
+            lv = cluster[1]
 
-        cluster_found = False
+            # cost
+            cost = 0
+            if lv == 1:
+                cost += LV1CG
+            elif lv == 2:
+                cost += LV2CG
+            elif lv == 3:
+                cost += LV3CG
+            for i in range(len(route) - 1):
+                cost += self.dist[route[i]][route[i + 1]] * TR
+            costs.append(cost)
 
-        for lvHull, lv in [(lv3OnHull, 3), (lv2OnHull, 2), (lv1OnHull, 1)]:
-            for i in lvHull:
-                startPt = i
-                serveCluster = findCluster(dist, job, notServed, startPt, lv)
-                served.append(serveCluster)
-                cluster_found = True
-                break
-            if cluster_found:
-                break
-    if notServed != []:
-        while(notServed != []):
-            cluster = findCluster(dist, job, notServed, findMaxLv(notServed, job)[0], findMaxLv(notServed, job)[1])
-            served.append(cluster)
-    return served
+            #time
+            serve = 0
+            for i in range(len(route) - 1):
+                serve += self.job[route[i]][3]
+                serve += self.dist[route[i]][route[i + 1]]
+            serve += self.job[route[-1]][3]
+            times.append(int(serve))
+        return [costs, times]
 
-# Check if we can actually need one less caregiver
-def oneLessCG(dist, job, serve):
-    temp = copy.deepcopy(serve[-1])
-    for idx, cg in enumerate(serve[:-1]):
-        toBeAdd = copy.deepcopy(cg)
-        toBeAdd[0] += temp[0]
-        if(toBeAdd[1] < temp[1]):
-            toBeAdd[1] = temp[1]
-        cgCount = 0
-        while toBeAdd[0] != []:
-            cluster = findCluster(dist, job, toBeAdd[0], toBeAdd[0][0], toBeAdd[1])
-            cgCount += 1 
-            if (cgCount > 1):
-                #print("We are not able to reduce the amount of this caregiver")
-                continue
-            if toBeAdd[0] == []:
-                if cgCount == 1:
-                    return [idx, cluster]
-    return -1
+    # plot process
+    def plotProcess(self, routes):  
+        SIZE = 500
+        visited = set()   
+        route = []
+        pts = self.getPoints()
 
-# Calculate the cost given list of routes
-def calCost(dist, job, routeList):
-    # totalcost = [hiring, transportation]
-    totalCost = [0, 0]
-    allTime = []
-    for i in routeList:
-        route = i[0]
-        level = i[1]
+        for cluster in routes:
+            route = cluster[0]
 
-        cgTime = calTime(route, dist, job)
-        # print(f"Time spent: {sum(cgTime)} with service time {cgTime[0]}, travelling time {cgTime[1]}.")
-        totalCost[1] += round(cgTime[1] + 0.5) * TR
-        if level == 1:
-            totalCost[0] += LV1CG
-        elif level == 2:
-            totalCost[0] += LV2CG
-        elif level == 3:
-            totalCost[0] += LV3CG
+            # Update visited patients from previous routes
+            unvisited_idx = [i for i in range(len(pts)) if i not in visited]
+            unvisited = pts[unvisited_idx]
 
-        allTime.append(sum(cgTime))
-    allTime = np.array(allTime)
-    print("Total cost for the area:", round(sum(totalCost)), "with hiring cost", round(totalCost[0]), "and transportation cost", round(totalCost[1]))
-    print("Time for cgs:", round(np.sum(allTime)), 
-          ", max:", round(np.max(allTime)), 
-          ", min:", round(np.min(allTime)), 
-          ", avg:", round(np.mean(allTime), 1), 
-          ", std:", round(np.std(allTime), 2),
-          ",with a total of", len(routeList), "caregivers.")
-    return totalCost
+            # Draw all patients
+            for i, (x, y) in enumerate(pts):
+                if i in visited:
+                    color = "lightgray"
+                else:
+                    level = self.job[i][2]
+                    color = {1: "lime", 2: "cyan", 3: "red"}[level]
 
-# mapping
-def sort_map(job):
-    # add indices
-    idx = list(range(len(job)))
-    # sort by lv -> twS -> twE
-    sorted_lv_tw = sorted(idx, key = lambda i: (-job[i][2], job[i][0], job[i][1]))
-    return sorted_lv_tw
+                plt.scatter(x, y, color=color, marker="o", s=SIZE, zorder=2, edgecolors="black")
+                plt.text(x, y, str(i + 1), fontsize=10, color="black", ha="center", va="center", zorder=3)
 
-# Plot the vertices as well as the convex hull
-def plot(pts, job, hull, routeList):  
-    SIZE = 500
-    # Plot
-    plt.figure(figsize=(8, 8))
-    # Annotate points with levels
-    for i, pt in enumerate(pts):
-        x, y = pt[0], pt[1]
-        level = job[i][2]
-        if level == 1:
-            color = "green"
-        elif level == 2:
-            color = "cyan"
-        elif level == 3:
-            color = "red"
+            # Draw convex hull of unvisited patients
+            if len(unvisited) >= 3:
+                hull = ConvexHull(unvisited)
+                for simplex in hull.simplices:
+                    plt.plot(unvisited[simplex, 0], unvisited[simplex, 1], dashes=[3, 6], color="black", zorder=1, linewidth=1)
+            plt.xticks([])
+            plt.yticks([])
+            plt.axis("off")
+            plt.show()
 
-        plt.scatter(x, y, color = color, marker = "o", s = SIZE, zorder = 2)
-        plt.text(x, y, str(i + 1), fontsize = 10, color = "black", ha = "center", va = "center", zorder = 3)
+            # Draw the route
+            route_x = [pts[i][0] for i in route]
+            route_y = [pts[i][1] for i in route]
+
+            plt.figure(figsize=(8, 8))
+
+            for i, (x, y) in enumerate(pts):
+                if i in visited:
+                    color = "lightgray"
+                else:
+                    level = self.job[i][2]
+                    color = {1: "lime", 2: "cyan", 3: "red"}[level]
+
+                plt.scatter(x, y, color=color, marker="o", s=SIZE, zorder=2, edgecolors="black")
+                plt.text(x, y, str(i + 1), fontsize=10, color="black", ha="center", va="center", zorder=3)
+
+            # Draw convex hull
+            if len(unvisited) >= 3:
+                for simplex in hull.simplices:
+                    plt.plot(unvisited[simplex, 0], unvisited[simplex, 1], dashes=[3, 6], color="black", zorder=1, linewidth=1)
+
+            plt.plot(route_x, route_y, color="black", zorder=1)
+            plt.text(route_x[0] - 1, route_y[0] + 2.1, "start", fontsize=10, color="black", va="center", ha="center", zorder=3)
+            plt.text(route_x[-1], route_y[-1] + 2.1, "end", fontsize=10, color="black", va="center", ha="center", zorder=3)
+            plt.xticks([])
+            plt.yticks([])
+            plt.axis("off")
+            plt.show()
+
+            # Mark this route's patients as visited
+            visited.update(route)
+
+# def plotWhole(pts, job, routes):
+#     SIZE = 500 # 200
+#     EPSIZE = 200
+#     visited = []    
+#     route = []
     
-    for simplex in hull.simplices:
-        plt.plot(pts[simplex, 0], pts[simplex, 1], 'k-')
-    """
-    for simplex in hullLv1.simplices:
-        plt.plot(patLv1[simplex, 0], patLv1[simplex, 1], 'g-')
-    for simplex in hullLv2.simplices:
-        plt.plot(patLv2[simplex, 0], patLv2[simplex, 1], 'y-')
-    for simplex in hullLv3.simplices:
-        plt.plot(patLv3[simplex, 0], patLv3[simplex, 1], 'r-')
-    """
-    # Plot the route
-    for j in routeList:
-        route = j[0]
-        route_x = [pts[i][0] for i in route]
-        route_y = [pts[i][1] for i in route]
-        plt.plot(route_x, route_y, marker=None)
-        
-        # Optionally, highlight start and end points of the route
-        plt.scatter(route_x[0], route_y[0], color='purple', label='Start', zorder=1, marker = ".")
-        plt.scatter(route_x[-1], route_y[-1], color='orange', label='End', zorder=1, marker = ".")
+#     plt.figure(figsize=(8, 8))
 
-    # Set labels and title
-    plt.xlabel('X Coordinate')
-    plt.ylabel('Y Coordinate')
-    plt.title('Plot of Points')
-    plt.grid()
-    plt.axis('equal')  # Equal scaling for x and y axes
-    plt.show()
-
-def plotProcess(pts, job, hull, routes):  
-    SIZE = 500 # 200
-    EPSIZE = 200
-    visited = []    
-    route = []
-    for i in routes:
-        plt.figure(figsize=(8, 8))
-
-        for j in route:
-            visited.append(j)
-        route = i[0]
-        # pts
-        unvisited = np.array([pt for i, pt in enumerate(pts) if i not in visited])
-        unvisited_idx = [i for i in range(len(pts)) if i not in visited]
-        for i, pt in enumerate(pts):
-            x, y = pt[0], pt[1]
-            if i in visited:
-                color = "lightgray"
-            else:
-                level = job[i][2]
-                if level == 1:
-                    color = "lime" # "black"
-                elif level == 2:
-                    color = "cyan" # "black"
-                elif level == 3:
-                    color = "red" # "black"
-            plt.scatter(x, y, color = color, marker = "o", s = SIZE, zorder = 2, edgecolors = "black")
-            plt.text(x, y, str(i + 1), fontsize = 10, color = "black", ha = "center", va = "center", zorder = 3)
-        # hull
-        hull = ConvexHull(unvisited)
-        for simplex in hull.simplices:
-            plt.plot(unvisited[simplex, 0], unvisited[simplex, 1], dashes = [3, 6], color = "black", zorder = 1, linewidth = 1)
- 
-        plt.xticks([])
-        plt.yticks([])
-        plt.axis = False
-        plt.show()
-
-        plt.figure(figsize=(8, 8))
-        for i, pt in enumerate(pts):
-            x, y = pt[0], pt[1]
-            if i in visited:
-                color = "lightgray"
-            else:
-                level = job[i][2]
-                if level == 1:
-                    color = "lime"
-                elif level == 2:
-                    color = "cyan"
-                elif level == 3:
-                    color = "red"
-            plt.scatter(x, y, color = color, marker = "o", s = SIZE, zorder = 2, edgecolors = "black")
-            plt.text(x, y, str(i + 1), fontsize = 10, color = "black", ha = "center", va = "center", zorder = 3)
-        for simplex in hull.simplices:
-            plt.plot(unvisited[simplex, 0], unvisited[simplex, 1], dashes = [3, 6], color = "black", zorder = 1, linewidth = 1)
-        # route
-        route_x = [pts[i][0] for i in route]
-        route_y = [pts[i][1] for i in route]
-        plt.text(route_x[0] - 1, route_y[0] + 2.1, str("start"), fontsize = 10, color = "black", va = "center", ha = "center", zorder = 3)
-        plt.text(route_x[-1], route_y[-1] + 2.1, str("end"), fontsize = 10, color = "black", va = "center", ha = "center", zorder = 3)
-        plt.plot(route_x, route_y, zorder = 1, color = "black")
-
-        plt.xticks([])
-        plt.yticks([])
-        plt.axis = False
-        plt.show()
-
-def plotWhole(pts, job, routes):
-    SIZE = 500 # 200
-    EPSIZE = 200
-    visited = []    
-    route = []
+#     for i, pt in enumerate(pts):
+#         x, y = pt[0], pt[1]
+#         level = job[i][2]
+#         if level == 1:
+#             color = "lime" # "black"
+#         elif level == 2:
+#             color = "cyan" # "black"
+#         elif level == 3:
+#             color = "red" # "black"
+#         plt.scatter(x, y, color = color, marker = "o", s = SIZE, zorder = 2, edgecolors = "black")
+#         plt.text(x, y, str(i + 1), fontsize = 10, color = "black", ha = "center", va = "center", zorder = 3)
     
-    plt.figure(figsize=(8, 8))
+#     for route in routes:
+#         # route
+#         print(route)
+#         route_x = [pts[i][0] for i in route[0]]
+#         route_y = [pts[i][1] for i in route[0]]
+#         plt.text(route_x[0], route_y[0] + 1.2, str("start"), fontsize = 10, color = "black", va = "center", ha = "center", zorder = 3)
+#         plt.text(route_x[-1], route_y[-1] + 1.2, str("end"), fontsize = 10, color = "black", va = "center", ha = "center", zorder = 3)
+#         plt.plot(route_x, route_y, zorder = 1, color = "black")
 
-    for i, pt in enumerate(pts):
-        x, y = pt[0], pt[1]
-        level = job[i][2]
-        if level == 1:
-            color = "lime" # "black"
-        elif level == 2:
-            color = "cyan" # "black"
-        elif level == 3:
-            color = "red" # "black"
-        plt.scatter(x, y, color = color, marker = "o", s = SIZE, zorder = 2, edgecolors = "black")
-        plt.text(x, y, str(i + 1), fontsize = 10, color = "black", ha = "center", va = "center", zorder = 3)
-    
-    for route in routes:
-        # route
-        print(route)
-        route_x = [pts[i][0] for i in route[0]]
-        route_y = [pts[i][1] for i in route[0]]
-        plt.text(route_x[0], route_y[0] + 1.2, str("start"), fontsize = 10, color = "black", va = "center", ha = "center", zorder = 3)
-        plt.text(route_x[-1], route_y[-1] + 1.2, str("end"), fontsize = 10, color = "black", va = "center", ha = "center", zorder = 3)
-        plt.plot(route_x, route_y, zorder = 1, color = "black")
-
-    plt.xticks([])
-    plt.yticks([])
-    plt.axis = False
-    plt.show()
-
-def getInit(dist = None, job = None):
-    
-    if dist is None and job is None:
-        # Read the text file into a 2-dimensional array.
-        dist = np.loadtxt("10-1-dist.txt")
-        job = np.loadtxt("10-1-job.txt")
-
-    # Check symmetry
-    makeSymm(dist)
-    checkData(dist, job)
-
-    # Apply MDS
-    # Use to plot location
-    mds = MDS(n_components = 2, dissimilarity = "precomputed", random_state = 42)
-    ptsLocation = mds.fit_transform(dist)
-
-    mapping = sort_map(job)
-    allPats = mapping
-    clusters = hullPivot(dist, job, allPats, ptsLocation)
-    # print("DhiCH:", clusters)
-
-    check = 1
-    while(check):
-        saveCost = oneLessCG(dist, job, clusters)
-        if saveCost == -1:
-            # print("We were not able to reduce the amount of caregivers.")
-            check = 0
-        else:
-            # print("We are able to reduce one caregiver.")
-            clusters.pop(-1)
-            clusters.pop(saveCost[0])
-            clusters.append(saveCost[1])
-            pass
-            # print("One less cg:", clusters)
-
-    seq = []
-    for i in clusters:
-        for j in i[0]:
-            seq.append(j)
-    return seq
+#     plt.xticks([])
+#     plt.yticks([])
+#     plt.axis = False
+#     plt.show()
